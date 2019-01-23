@@ -1,9 +1,11 @@
 body {
+  background-color: #e1e8f0;
   margin: 0;
   overflow: hidden;
 }
 
 body * {
+  position: relative;
   z-index: -1;
 }
 
@@ -28,6 +30,7 @@ body * {
 }
 
 .palette-container {
+  background-color: #fff;
   display: flex;
   justify-content: space-around;
 }
@@ -37,6 +40,7 @@ body * {
   height: 350px;
   margin-top: 50px;
   width: 200px;
+  z-index: 0;
 }
 
 .form-container {
@@ -90,7 +94,7 @@ body * {
 }
 
 .select-saved-btn-container-hide {
-  background-color: #fff;
+  background-color: #e1e8f0;
 }
 
 .select-saved-btn-container-view {
