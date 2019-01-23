@@ -13,17 +13,30 @@ document.body.onkeyup = function (event) {
 const selectSavedBtn = document.querySelector('.select-saved-btn')
 selectSavedBtn.addEventListener('click', function (event) {
   event.preventDefault()
+  toggleBodyStyle()
   toggleHeaderStyle()
   toggleSavedPaletteContainerStyle()
   toggleSelectSavedPaletteContainerStyle()
 })
 
-const generateNewPaletteBtn = document.querySelector('.select-saved-btn')
+const generateNewPaletteBtn = document.querySelector('.generate-btn')
 generateNewPaletteBtn.addEventListener('click', function (event) {
   event.preventDefault()
+  console.log(event.target)
   generatePaletteElement()
 })
 
+
+function toggleBodyStyle() {
+  const body = document.querySelector('.body')
+  
+  if (body.classList.contains('body-view')) {
+    setTimeout(function(){ body.classList.toggle('body-view') }, 1000)
+  }
+  else {
+    body.classList.toggle('body-view')
+  }
+}
 
 function toggleHeaderStyle() {
   const header = document.querySelector('.header')
