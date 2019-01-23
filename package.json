@@ -20,6 +20,7 @@
   "homepage": "https://github.com/JoelSmith123/palette-picker#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "serve-favicon": "^2.5.0"
   }
 }
