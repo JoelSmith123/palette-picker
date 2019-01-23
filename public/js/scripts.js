@@ -29,7 +29,7 @@ generateNewPaletteBtn.addEventListener('click', function (event) {
 
 function toggleBodyStyle() {
   const body = document.querySelector('.body')
-  
+
   if (body.classList.contains('body-view')) {
     setTimeout(function(){ body.classList.toggle('body-view') }, 1000)
   }
@@ -84,6 +84,14 @@ function generatePaletteElement() {
   paletteContainer.innerHTML = ''
   for (let i = 0; i < 5; i++) {
     let paletteColorElement = document.createElement('div')
+
+    let iconContainer = document.createElement('div')
+    iconContainer.classList.add('color-icon-container')
+    let icon = document.createElement('i')
+    icon.classList.add('fas', 'fa-lock-open', 'unlocked-color-icon')
+    iconContainer.appendChild(icon)
+    paletteColorElement.appendChild(iconContainer)
+
     paletteColorElement.classList.add('palette-color')
     paletteColorElement.style.backgroundColor = generateRandomHexCode()
     paletteContainer.appendChild(paletteColorElement) 

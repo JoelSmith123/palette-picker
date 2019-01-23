@@ -1,3 +1,11 @@
+@keyframes wiggle {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(10deg); }
+  60% { transform: rotate(40deg); }
+  80% { transform: rotate(-20deg); }
+  100% { transform: rotate(0deg); }
+}
+
 .body {
   background-color: #e1e8f0;
   margin: 0;
@@ -42,6 +50,26 @@
   margin-top: 50px;
   width: 200px;
   z-index: 0;
+}
+
+.palette-color:hover .unlocked-color-icon{
+  animation: wiggle 1s infinite;
+}
+
+.color-icon-container {
+  margin: 0 auto;
+  margin-top: 250px;
+  text-align: center;
+}
+
+.unlocked-color-icon {
+  transition: all 1s ease-in-out;
+  font-size: 2rem;
+}
+
+.unlocked-color-icon:hover {
+  transform: scale(1.5);
+  animation: none !important;
 }
 
 .form-container {

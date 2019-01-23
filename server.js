@@ -22,10 +22,18 @@ app.use(urlLogger, timeLogger)
 app.set('port', process.env.PORT || 3000)
 app.locals.title = 'Palette Picker'
 
-app.listen(app.get('port'), () => {
-  console.log(`${app.locals.title} is running on ${app.get('port')}.`);
-});
+
+
+app.locals.savedPalettes = [
+
+]
+
 
 app.get('/', (request, response) => {
   response.sendFile(path.join(_dirname + '/public/index.html'))
 })
+
+
+app.listen(app.get('port'), () => {
+  console.log(`${app.locals.title} is running on ${app.get('port')}.`);
+});
