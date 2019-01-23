@@ -33,11 +33,13 @@ body * {
   background-color: #fff;
   display: flex;
   justify-content: space-around;
+  padding-bottom: 30px;
 }
 
 .palette-color {
   background-color: blue;
-  height: 350px;
+  border-radius: 12px;
+  height: 320px;
   margin-top: 50px;
   width: 200px;
   z-index: 0;
@@ -53,6 +55,7 @@ body * {
   border-radius: 12px;
   background-color: #3333ff;
   color: #fff;
+  font-size: 0.8rem;
   height: 50px;
   width: 80px;
 }
@@ -103,8 +106,8 @@ body * {
 
 .select-saved-btn {
   background-color: #98ffd5;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
   height: 50px;
   margin: 0 auto;
   text-align: center;
