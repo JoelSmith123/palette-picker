@@ -3,6 +3,13 @@ window.onload = function () {
 }
 
 
+document.body.onkeyup = function (event) {
+  if(event.keyCode == 32){
+    generatePaletteElement()
+  }
+}
+
+
 const selectSavedBtn = document.querySelector('.select-saved-btn')
 selectSavedBtn.addEventListener('click', function (event) {
   event.preventDefault()
@@ -61,6 +68,7 @@ function generateRandomHexCode() {
 
 function generatePaletteElement() {
   const paletteContainer = document.querySelector('.palette-container')
+  paletteContainer.innerHTML = ''
   for (let i = 0; i < 5; i++) {
     let paletteColorElement = document.createElement('div')
     paletteColorElement.classList.add('palette-color')
