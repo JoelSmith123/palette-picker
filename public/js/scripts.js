@@ -14,7 +14,4 @@ selectSavedBtn.addEventListener('click', function (event) {
 
   selectSavedBtnContainer.classList.toggle('select-saved-btn-container-hide')
   selectSavedBtnContainer.classList.toggle('select-saved-btn-container-view')
-
-  selectSavedBtn.classList.toggle('select-saved-btn-hide')
-  selectSavedBtn.classList.toggle('select-saved-btn-view')
 })

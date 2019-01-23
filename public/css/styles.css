@@ -68,8 +68,7 @@ body * {
 }
 
 .saved-palette-container {
-  /*background-color: #98ffd5;*/
-  background-color: orange;
+  background-color: #98ffd5;
   height: 1000px;
   margin-top: 30px;
   transition: margin-top 1s;
@@ -95,23 +94,18 @@ body * {
 }
 
 .select-saved-btn-container-view {
-  background-color: orange;
+  background-color: #98ffd5;
 }
 
 .select-saved-btn {
+  background-color: #98ffd5;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
   height: 50px;
   margin: 0 auto;
   text-align: center;
   transition: background-color 1s;
   width: 200px;
-}
-
-.select-saved-btn-hide {
-  background-color: red;
-}
-
-.select-saved-btn-view {
-  background-color: orange;
 }
 
 .select-saved-btn-icon {
