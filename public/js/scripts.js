@@ -13,6 +13,7 @@ document.body.onkeyup = function (event) {
 const selectSavedBtn = document.querySelector('.select-saved-btn')
 selectSavedBtn.addEventListener('click', function (event) {
   event.preventDefault()
+
   toggleBodyStyle()
   toggleHeaderStyle()
   toggleSavedPaletteContainerStyle()
@@ -22,8 +23,15 @@ selectSavedBtn.addEventListener('click', function (event) {
 const generateNewPaletteBtn = document.querySelector('.generate-btn')
 generateNewPaletteBtn.addEventListener('click', function (event) {
   event.preventDefault()
-  console.log(event.target)
+
   generatePaletteElement()
+})
+
+document.body.addEventListener('click', function (event) {
+  if (event.target.classList.contains('unlocked-color-icon'))
+  event.preventDefault()
+
+  lockPaletteColor(event)
 })
 
 
@@ -81,20 +89,40 @@ function generateRandomHexCode() {
 
 function generatePaletteElement() {
   const paletteContainer = document.querySelector('.palette-container')
-  paletteContainer.innerHTML = ''
-  for (let i = 0; i < 5; i++) {
-    let paletteColorElement = document.createElement('div')
+  let paletteColorElementsArr = document.querySelectorAll('.palette-color')
 
-    let iconContainer = document.createElement('div')
-    iconContainer.classList.add('color-icon-container')
-    let icon = document.createElement('i')
-    icon.classList.add('fas', 'fa-lock-open', 'unlocked-color-icon')
-    iconContainer.appendChild(icon)
-    paletteColorElement.appendChild(iconContainer)
-
-    paletteColorElement.classList.add('palette-color')
-    paletteColorElement.style.backgroundColor = generateRandomHexCode()
-    paletteContainer.appendChild(paletteColorElement) 
+  if (paletteColorElementsArr[0]) {
+    paletteColorElementsArr.forEach(paletteColorElement => {
+      if (paletteColorElement.classList.contains('selected-palette-color')) {
+        return 
+      }
+      else {
+        paletteColorElement.style.backgroundColor = generateRandomHexCode()
+      }
+    })
   }
+  else {
+    paletteContainer.innerHTML = ''
+
+    for (let i = 0; i < 5; i++) {
+      let paletteColorElement = document.createElement('div')
+
+      let iconContainer = document.createElement('div')
+      iconContainer.classList.add('color-icon-container')
+      let icon = document.createElement('i')
+      icon.classList.add('fas', 'fa-lock-open', 'unlocked-color-icon')
+      iconContainer.appendChild(icon)
+      paletteColorElement.appendChild(iconContainer)
+
+      paletteColorElement.classList.add('palette-color')
+      paletteColorElement.style.backgroundColor = generateRandomHexCode()
+      paletteContainer.appendChild(paletteColorElement) 
+    }    
+  }
+}
+
+function lockPaletteColor(event) {
+  let parentPaletteColorElement = event.target.parentNode.parentNode
+  parentPaletteColorElement.classList.toggle('selected-palette-color')
 }
 

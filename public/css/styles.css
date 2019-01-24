@@ -45,6 +45,7 @@
 }
 
 .palette-color {
+  box-sizing: border-box;
   border-radius: 12px;
   height: 320px;
   margin-top: 50px;
@@ -54,6 +55,10 @@
 
 .palette-color:hover .unlocked-color-icon{
   animation: wiggle 1s infinite;
+}
+
+.selected-palette-color {
+  border: 5px solid #000;
 }
 
 .color-icon-container {
