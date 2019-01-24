@@ -123,6 +123,10 @@
   margin-top: -490px;
 }
 
+.saved-palette-container-view * {
+  z-index: 2;
+}
+
 .select-saved-btn-container {
   transition: background-color 1s;
   width: 100%;
@@ -135,6 +139,7 @@
 .select-saved-btn-container-view {
   background-color: #98ffd5;
 }
+
 
 .select-saved-btn {
   background-color: #98ffd5;
@@ -150,5 +155,36 @@
 .select-saved-btn-icon {
   font-size: 2rem;
   padding-top: 8px; 
+}
+
+.new-project-title {
+
+}
+
+.new-project-form-container {
+  display: flex;
+}
+
+.new-project-form {
+  margin: 0 auto;
+}
+
+.saved-project-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.project-container {
+  background-color: #fff;
+  border-radius: 12px;
+  height: 200px;
+  margin-top: 50px;
+  width: 300px;
+}
+
+.project-title {
+  padding-left: 20px;
 }
 

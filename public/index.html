@@ -18,7 +18,9 @@
       <button class='btn generate-btn'>Generate a new palette!</button>
     </form>
     <form>
-      <button class='btn'>Select project</button>
+      <select>
+        <!-- <option value="">--Select project--</option> -->
+      </select>
       <input class='palette-name-input' type="" name="" placeholder="Palette name ...">
       <button class='btn'>Save palette</button>
     </form>    
@@ -26,6 +28,16 @@
   <div class="saved-palette-container saved-palette-container-hide">
     <div class="select-saved-btn-container select-saved-btn-container-hide">
       <div class='select-saved-btn'><i class="fas fa-bars select-saved-btn-icon"></i></div>
+    </div>
+    <div class='new-project-form-container'>
+      <form class='new-project-form'>
+        <h3 class='new-project-title'>Create a new project</h3>
+        <input class='new-project-input' type="" name="" value='' placeholder="New project name">
+        <button class='save-new-project-btn'>Save Project</button>
+      </form>
+    </div>
+    <div class='saved-project-container'>
+      
     </div>
   </div>
 </body>

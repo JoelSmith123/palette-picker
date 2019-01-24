@@ -1,5 +1,6 @@
 window.onload = function () {
   generatePaletteElement()
+  toggleAllSavedPaletteStyles()
 }
 
 
@@ -14,10 +15,7 @@ const selectSavedBtn = document.querySelector('.select-saved-btn')
 selectSavedBtn.addEventListener('click', function (event) {
   event.preventDefault()
 
-  toggleBodyStyle()
-  toggleHeaderStyle()
-  toggleSavedPaletteContainerStyle()
-  toggleSelectSavedPaletteContainerStyle()
+  toggleAllSavedPaletteStyles()
 })
 
 const generateNewPaletteBtn = document.querySelector('.generate-btn')
@@ -34,6 +32,20 @@ document.body.addEventListener('click', function (event) {
   lockPaletteColor(event)
 })
 
+const newProjectForm = document.querySelector('.new-project-form')
+newProjectForm.addEventListener('submit', function (event) {
+  event.preventDefault()
+
+  saveNewProject(event)
+})
+
+
+function toggleAllSavedPaletteStyles() {
+  toggleBodyStyle()
+  toggleHeaderStyle()
+  toggleSavedPaletteContainerStyle()
+  toggleSelectSavedPaletteContainerStyle()
+}
 
 function toggleBodyStyle() {
   const body = document.querySelector('.body')
@@ -128,5 +140,18 @@ function lockPaletteColor(event) {
     parentPaletteColorElement = event.target.parentNode.parentNode
     parentPaletteColorElement.classList.toggle('selected-palette-color')    
   }
+}
+
+function saveNewProject(event) {
+  const newProjectInput = document.querySelector('.new-project-input')
+  const savedProjectContainer = document.querySelector('.saved-project-container')
+  
+  const newProjectElement = document.createElement('div')
+  newProjectElement.classList.add('project-container')
+  const newProjectElementTitle = document.createElement('h3')
+  newProjectElementTitle.classList.add('project-title')
+  newProjectElementTitle.innerText = newProjectInput.value
+  newProjectElement.appendChild(newProjectElementTitle)
+  savedProjectContainer.appendChild(newProjectElement)
 }
 
