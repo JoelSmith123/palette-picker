@@ -122,7 +122,11 @@ function generatePaletteElement() {
 }
 
 function lockPaletteColor(event) {
-  let parentPaletteColorElement = event.target.parentNode.parentNode
-  parentPaletteColorElement.classList.toggle('selected-palette-color')
+  let parentPaletteColorElement
+
+  if (event.target.parentNode.parentNode.classList.contains('palette-color')) {
+    parentPaletteColorElement = event.target.parentNode.parentNode
+    parentPaletteColorElement.classList.toggle('selected-palette-color')    
+  }
 }
 
