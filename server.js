@@ -25,7 +25,21 @@ app.locals.title = 'Palette Picker'
 
 
 app.locals.savedProjects = [
-
+  {
+    id: 1,
+    name: 'Harrison',
+    type: 'Dog'
+  },
+  {
+    id: 2, 
+    name: 'Leia',
+    type: 'Dog'
+  },
+  {
+    id: 3,
+    name: 'Marlow',
+    type:'Cat'
+  }  
 ]
 
 
@@ -46,7 +60,6 @@ app.post('/api/v1/projects', (request, response) => {
 
   if (project) {
     app.locals.savedProjects.push({...project, id})    
-
     response.status(200).json({ id })
   }
   else {
@@ -85,10 +98,10 @@ app.delete('/api/v1/projects/:id', (request, response) => {
 
 app.get('/api/v1/projects/:id/palettes', (request, response) => {
   const id = parseInt(request.params.id)
-  const project = app.locals.savedProjects.find(project => project.id === id)
+  const palettes = app.locals.savedProjects.find(project => project.id === id).palettes
 
-  if (project) {
-    response.status(200).json({ project.palettes })    
+  if (palettes) {
+    response.status(200).json({ palettes })    
   }
   else {
     response.sendStatus(404)
@@ -102,7 +115,6 @@ app.post('/api/v1/projects/:id/palettes', (request, response) => {
 
   if (palette) {
     project.push({...palette, id})    
-
     response.status(200).json({ id })
   }
   else {
