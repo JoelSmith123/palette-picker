@@ -1,4 +1,5 @@
 const express = require('express')
+const environment = process.env.NODE_ENV || 'development';
 const path = require('path')
 const bodyParser = require('body-parser')
 const app = express()
