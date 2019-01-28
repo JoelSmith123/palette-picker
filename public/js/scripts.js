@@ -220,12 +220,17 @@ function renderPalettesToPageFromProject(palettes, project) {
     paletteElementTitle.innerText = palette.name
     paletteElementTitle.classList.add('project-palette-container-title')
     paletteElement.appendChild(paletteElementTitle)
+    const removePaletteBtn = document.createElement('button')
+    removePaletteBtn.innerText = 'X'
+    removePaletteBtn.classList.add('remove-palette-btn')
 
     renderPaletteColorBoxes(palette.color_1, paletteElement)  
     renderPaletteColorBoxes(palette.color_2, paletteElement)
     renderPaletteColorBoxes(palette.color_3, paletteElement)
     renderPaletteColorBoxes(palette.color_4, paletteElement)
     renderPaletteColorBoxes(palette.color_5, paletteElement) 
+
+    paletteElement.appendChild(removePaletteBtn)
 
     matchingProject.appendChild(paletteElement)
   })
@@ -302,4 +307,6 @@ function savePaletteToProject() {
 
   loadSavedProjects()
 }
+
+
 

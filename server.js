@@ -117,7 +117,6 @@ app.post('/api/v1/projects/:id/palettes', (request, response) => {
       response.status(201).json({ id })
     })
     .catch(error => {
-      console.log(error)
       response.status(500).json({ error });
     });
 })
