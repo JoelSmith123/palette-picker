@@ -172,6 +172,7 @@ function loadSavedProjects() {
   fetch('api/v1/projects')
     .then( response => response.json() )
     .then( returnedProjects => renderProjectsToPage(returnedProjects))
+    .catch(error => console.log(error))
 }
 
 function renderProjectsToPage(projects) {
@@ -179,13 +180,50 @@ function renderProjectsToPage(projects) {
   projects.forEach(project => {
     
     const newProjectElement = document.createElement('div')
+    newProjectElement.id = project.id
     newProjectElement.classList.add('project-container')
     const newProjectElementTitle = document.createElement('h3')
     newProjectElementTitle.classList.add('project-title')
     newProjectElementTitle.innerText = project.name
     newProjectElement.appendChild(newProjectElementTitle)
     savedProjectContainer.appendChild(newProjectElement)    
+
+    fetchPalettesForProject(project)
   })
+}
+
+function fetchPalettesForProject(project) {
+  fetch(`api/v1/projects/${project.id}/palettes`)
+    .then( response => response.json() )
+    .then( returnedPalettes => renderPalettesToPageFromProject(returnedPalettes, project))
+    .catch(error => console.log(error))
+}
+
+function renderPalettesToPageFromProject(palettes, project) {
+  const projectElements = document.querySelectorAll('.project-container')
+  const matchingProject = projectElements.find(projectElement => projectElement.id === project.id)
+
+  palettes.forEach(palette => {
+    const paletteElement = document.createElement('div')
+    paletteElement.id = matchingProject.id
+    paletteElement.classList.add('project-palette-container')
+    const paletteElementTitle = document.createElement('h2')
+    paletteElementTitle.classList.add('project-palette-container-title')
+
+    renderPaletteColorBoxes(palette.color_1, paletteElement)  
+    renderPaletteColorBoxes(palette.color_2, paletteElement)
+    renderPaletteColorBoxes(palette.color_3, paletteElement)
+    renderPaletteColorBoxes(palette.color_4, paletteElement)
+    renderPaletteColorBoxes(palette.color_5, paletteElement) 
+  })
+
+}
+
+function renderPaletteColorBoxes(color, paletteElement) => {
+  const colorBox = document.createElement('div')
+  colorBox.classList.add('palette-color-box')
+  colorBox.style.backgroundColor = '#' + color 
+  paletteElement.appendChild(colorBox)
 }
 
 
