@@ -1,15 +1,7 @@
 window.onload = function () {
   generatePaletteElement()
-  toggleAllSavedPaletteStyles()
+  loadSavedProjects()
 }
-
-
-document.body.onkeyup = function (event) {
-  if(event.keyCode == 32){
-    generatePaletteElement()
-  }
-}
-
 
 const selectSavedBtn = document.querySelector('.select-saved-btn')
 selectSavedBtn.addEventListener('click', function (event) {
@@ -26,6 +18,7 @@ generateNewPaletteBtn.addEventListener('click', function (event) {
 })
 
 document.body.addEventListener('click', function (event) {
+  removePaletteBtnEventListener()
   if (event.target.classList.contains('unlocked-color-icon'))
   event.preventDefault()
 
@@ -36,8 +29,28 @@ const newProjectForm = document.querySelector('.new-project-form')
 newProjectForm.addEventListener('submit', function (event) {
   event.preventDefault()
 
-  saveNewProject(event)
+  saveNewProject()
+  setTimeout(function(){ loadSavedProjects() }, 500)
 })
+
+const savePaletteBtn = document.querySelector('.save-palette-btn')
+savePaletteBtn.addEventListener('click', function (event) {
+  event.preventDefault()
+
+  savePaletteToProject()
+})
+
+function removePaletteBtnEventListener() {
+  const removePaletteBtn = document.querySelectorAll('.remove-palette-btn')
+  for (let i = 0; i < removePaletteBtn.length; i++) {
+    removePaletteBtn[i].addEventListener('click', function (event) {
+      event.preventDefault()
+
+      console.log('ran')
+      removePaletteFromProject(event)
+    })
+  }  
+}
 
 
 function toggleAllSavedPaletteStyles() {
@@ -142,16 +155,175 @@ function lockPaletteColor(event) {
   }
 }
 
-function saveNewProject(event) {
+function saveNewProject() {
   const newProjectInput = document.querySelector('.new-project-input')
-  const savedProjectContainer = document.querySelector('.saved-project-container')
-  
-  const newProjectElement = document.createElement('div')
-  newProjectElement.classList.add('project-container')
-  const newProjectElementTitle = document.createElement('h3')
-  newProjectElementTitle.classList.add('project-title')
-  newProjectElementTitle.innerText = newProjectInput.value
-  newProjectElement.appendChild(newProjectElementTitle)
-  savedProjectContainer.appendChild(newProjectElement)
+  const project = [{ name: newProjectInput.value }]
+
+  fetch('/api/v1/projects', {
+    method: 'POST',
+    body: JSON.stringify({ name: newProjectInput.value }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then( response => response.json() )
+  .catch(error => console.log(error))
+
+  renderProjectsToPage(project)
 }
+
+function loadSavedProjects() {
+  fetch('api/v1/projects')
+    .then( response => response.json() )
+    .then( returnedProjects => renderProjectsToPage(returnedProjects))
+    .catch(error => console.log(error))
+}
+
+function renderProjectsToPage(projects) {
+  const savedProjectContainer = document.querySelector('.saved-project-container')
+  savedProjectContainer.innerHTML = ''
+
+  projects.forEach(project => {
+    
+    const newProjectElement = document.createElement('div')
+    newProjectElement.id = project.id
+    newProjectElement.classList.add('project-container')
+    const newProjectElementTitle = document.createElement('h3')
+    newProjectElementTitle.classList.add('project-title')
+    newProjectElementTitle.innerText = project.name
+    newProjectElement.appendChild(newProjectElementTitle)
+    savedProjectContainer.appendChild(newProjectElement)    
+
+    fetchPalettesForProject(project)
+    addSelectProjectOptions(project)
+  })
+
+}
+
+function fetchPalettesForProject(project) {
+  fetch(`api/v1/projects/${project.id}/palettes`)
+    .then( response => response.json() )
+    .then( returnedPalettes => renderPalettesToPageFromProject(returnedPalettes, project))
+    .catch(error => console.log(error))
+}
+
+function renderPalettesToPageFromProject(palettes, project) {
+  const projectElements = document.querySelectorAll('.project-container')
+  let matchingProject 
+
+  for (let i = 0; i < projectElements.length; i++) {
+    if (parseInt(projectElements[i].id) === project.id) {
+      matchingProject = projectElements[i]
+    }
+  }
+
+  palettes.forEach(palette => {
+    const paletteElement = document.createElement('div')
+    paletteElement.id = palette.id
+    paletteElement.classList.add('project-palette-container')
+    const paletteElementTitle = document.createElement('h4')
+    paletteElementTitle.innerText = palette.name
+    paletteElementTitle.classList.add('project-palette-container-title')
+    paletteElement.appendChild(paletteElementTitle)
+    const removePaletteBtn = document.createElement('button')
+    removePaletteBtn.innerText = 'X'
+    removePaletteBtn.classList.add('remove-palette-btn')
+
+    renderPaletteColorBoxes(palette.color_1, paletteElement)  
+    renderPaletteColorBoxes(palette.color_2, paletteElement)
+    renderPaletteColorBoxes(palette.color_3, paletteElement)
+    renderPaletteColorBoxes(palette.color_4, paletteElement)
+    renderPaletteColorBoxes(palette.color_5, paletteElement) 
+
+    paletteElement.appendChild(removePaletteBtn)
+
+    matchingProject.appendChild(paletteElement)
+  })
+
+}
+
+function renderPaletteColorBoxes(color, paletteElement) {
+  const colorBox = document.createElement('div')
+  colorBox.classList.add('palette-color-box')
+  colorBox.style.backgroundColor = '#' + color 
+  paletteElement.appendChild(colorBox)
+}
+
+function addSelectProjectOptions(project) {
+  const projectSelectDropdownElement = document.querySelector('.project-select-dropdown')
+
+  const projectOptionElement = document.createElement('option')
+  projectOptionElement.value = project.id
+  projectOptionElement.innerText = project.name
+
+
+  projectSelectDropdownElement.appendChild(projectOptionElement)
+}
+
+
+function savePaletteToProject() {
+  const projectSelectDropdownElement = document.querySelector('.project-select-dropdown')
+  const selectedOptionProjectID = projectSelectDropdownElement.children[projectSelectDropdownElement.selectedIndex].value
+
+  function rgbToHex(R,G,B) {return toHex(R)+toHex(G)+toHex(B)}
+  function toHex(n) {
+   n = parseInt(n,10);
+   if (isNaN(n)) return "00";
+   n = Math.max(0,Math.min(n,255));
+   return "0123456789ABCDEF".charAt((n-n%16)/16)
+        + "0123456789ABCDEF".charAt(n%16);
+  }
+
+  function getRGB(str){
+    var match = str.match(/rgba?\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)?(?:, ?(\d(?:\.\d?))\))?/);
+    return match ? {
+      red: match[1],
+      green: match[2],
+      blue: match[3]
+    } : {};
+  }
+
+  const currentPalette = document.querySelectorAll('.palette-color')
+  const paletteNameInput = document.querySelector('.palette-name-input')
+  let paletteColors = []
+  for (let i = 0; i < currentPalette.length; i++) {
+    let rbgObject = getRGB(currentPalette[i].style.backgroundColor)
+    paletteColors.push(rgbToHex(rbgObject.red, rbgObject.green, rbgObject.blue))    
+  }    
+
+  fetch(`/api/v1/projects/${selectedOptionProjectID}/palettes`, {
+    method: 'POST',
+    body: JSON.stringify({ 
+      id: parseInt(Date.now().toString().split('').slice(6).join('')),
+      name: paletteNameInput.value,
+      color_1: paletteColors[0],
+      color_2: paletteColors[1],
+      color_3: paletteColors[2],
+      color_4: paletteColors[3],
+      color_5: paletteColors[4],
+      project_id: selectedOptionProjectID
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then( response => response.json() )
+  .catch(error => console.log(error))
+
+  setTimeout(function(){ loadSavedProjects() }, 500)
+}
+
+function removePaletteFromProject(event) {
+  const paletteID = event.target.parentNode.id
+  const projectID = event.target.parentNode.parentNode.id
+
+  fetch(`/api/v1/projects/${projectID}/palettes/${paletteID}`, {
+    method: 'DELETE'
+  })
+  .then(response => response.json())
+  .catch(error => console.log(error))
+
+  setTimeout(function(){ loadSavedProjects() }, 500)
+}
+
 
