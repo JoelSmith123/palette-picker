@@ -1,34 +1,53 @@
+// require express
 const express = require('express')
+// specify type of environment
 const environment = process.env.NODE_ENV || 'development';
+// require knexfile to configure the environment
 const configuration = require('./knexfile')[environment];
+// require the configured database
 const database = require('knex')(configuration);
+// require path module
 const path = require('path')
+// requires body-parser module for Express
 const bodyParser = require('body-parser')
+// imports app from Express to enable Express
 const app = express()
+// requires serve-favicon middleware to allow Node to change the favicon
 const favicon = require('serve-favicon')
 
+// console.logs the request url
 const urlLogger = (request, response, next) => {
   console.log('Request URL: ', request.url)
   next()
 }
 
+// console.logs the time of the request
 const timeLogger = (request, response, next) => {
   console.log('Datetime:', new Date(Date.now()).toString())
   next()
 }
 
+// tells our app to use bodyParser to extract the request for express
 app.use(bodyParser.json())
+// serves static files from public folder for express
 app.use(express.static('public'))
+// tells favicon what directory to get the favicon
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
+// runs urlLogger and timeLogger on each rerun of the app
 app.use(urlLogger, timeLogger)
 
+
+// tells express what port to host app on
 app.set('port', process.env.PORT || 3000)
+// gives app a title
 app.locals.title = 'Palette Picker'
 
+// renders the home page of the app
 app.get('/', (request, response) => {
   response.sendFile(path.join(_dirname + '/public/index.html'))
 })
 
+// gets all the stored projects from the server
 app.get('/api/v1/projects', (request, response) => {
   database('projects').select()
     .then((projects) => {
@@ -39,6 +58,7 @@ app.get('/api/v1/projects', (request, response) => {
     })
 })
 
+// posts a new project to the server
 app.post('/api/v1/projects', (request, response) => {
   const project = request.body
   const id = Date.now()
@@ -60,6 +80,8 @@ app.post('/api/v1/projects', (request, response) => {
     });
 })
 
+
+// gets a project from the server by id from the server
 app.get('/api/v1/projects/:id', (request, response) => {
   const projectID = parseInt(request.params.id)
 
@@ -73,6 +95,7 @@ app.get('/api/v1/projects/:id', (request, response) => {
     })
 })
 
+// deletes a project from the server by id on the server
 app.delete('/api/v1/projects/:id', (request, response) => {
   const projectID = parseInt(request.params.id)
 
@@ -87,6 +110,8 @@ app.delete('/api/v1/projects/:id', (request, response) => {
     })
 })
 
+
+// gets all the pallets belonging to a project from the server
 app.get('/api/v1/projects/:id/palettes', (request, response) => {
   const id = parseInt(request.params.id)
 
@@ -100,6 +125,8 @@ app.get('/api/v1/projects/:id/palettes', (request, response) => {
     })
 })
 
+
+// posts a new palette for a project to the server
 app.post('/api/v1/projects/:id/palettes', (request, response) => {
   const palette = request.body
   const id = palette.id
@@ -121,6 +148,7 @@ app.post('/api/v1/projects/:id/palettes', (request, response) => {
     });
 })
 
+// gets a palette by id of a project from the server
 app.get('/api/v1/projects/:projectID/palettes/:paletteID', (request, response) => {
   const projectID = parseInt(request.params.projectID)
   const paletteID = parseInt(request.params.paletteID)
@@ -136,6 +164,8 @@ app.get('/api/v1/projects/:projectID/palettes/:paletteID', (request, response) =
     })
 })
 
+
+// deletes a palette by id of a project from the server
 app.delete('/api/v1/projects/:projectID/palettes/:paletteID', (request, response) => {
   const projectID = parseInt(request.params.projectID)
   const paletteID = parseInt(request.params.paletteID)
@@ -153,6 +183,8 @@ app.delete('/api/v1/projects/:projectID/palettes/:paletteID', (request, response
 
 })
 
+
+// console.logs which port is hosting the app on every server reboot
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on ${app.get('port')}.`);
 });
