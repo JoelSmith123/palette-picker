@@ -1,6 +1,7 @@
 window.onload = function () {
   generatePaletteElement()
   toggleAllSavedPaletteStyles()
+  loadSavedProjects()
 }
 
 
@@ -36,7 +37,7 @@ const newProjectForm = document.querySelector('.new-project-form')
 newProjectForm.addEventListener('submit', function (event) {
   event.preventDefault()
 
-  saveNewProject(event)
+  saveNewProject()
 })
 
 const savePaletteBtn = document.querySelector('.save-palette-btn')
@@ -150,18 +151,44 @@ function lockPaletteColor(event) {
   }
 }
 
-function saveNewProject(event) {
+function saveNewProject() {
   const newProjectInput = document.querySelector('.new-project-input')
-  const savedProjectContainer = document.querySelector('.saved-project-container')
-  
-  const newProjectElement = document.createElement('div')
-  newProjectElement.classList.add('project-container')
-  const newProjectElementTitle = document.createElement('h3')
-  newProjectElementTitle.classList.add('project-title')
-  newProjectElementTitle.innerText = newProjectInput.value
-  newProjectElement.appendChild(newProjectElementTitle)
-  savedProjectContainer.appendChild(newProjectElement)
+  const project = [{ name: newProjectInput.value }]
+
+  fetch('/api/v1/projects', {
+    method: 'POST',
+    body: JSON.stringify({ name: newProjectInput.value }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then( response => response.json() )
+  .catch(error => console.log(error))
+
+  renderProjectsToPage(project)
 }
+
+function loadSavedProjects() {
+  fetch('api/v1/projects')
+    .then( response => response.json() )
+    .then( returnedProjects => renderProjectsToPage(returnedProjects))
+}
+
+function renderProjectsToPage(projects) {
+  const savedProjectContainer = document.querySelector('.saved-project-container')
+  projects.forEach(project => {
+    
+    const newProjectElement = document.createElement('div')
+    newProjectElement.classList.add('project-container')
+    const newProjectElementTitle = document.createElement('h3')
+    newProjectElementTitle.classList.add('project-title')
+    newProjectElementTitle.innerText = project.name
+    newProjectElement.appendChild(newProjectElementTitle)
+    savedProjectContainer.appendChild(newProjectElement)    
+  })
+}
+
+
 
 function savePaletteToProject() {
 
