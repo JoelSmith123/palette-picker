@@ -182,7 +182,6 @@
 .project-container {
   background-color: #fff;
   border-radius: 12px;
-  height: 200px;
   margin-top: 50px;
   width: 300px;
 }
@@ -192,15 +191,18 @@
 }
 
 .project-palette-container {
-  display: inline-block;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-bottom: 20px;
 }
 
 .project-palette-container-title {
-
+  margin: 0;
 }
 
 .palette-color-box {
-  height: 20px;
-  width: 20px;
+  height: 30px;
+  width: 30px;
 }
 

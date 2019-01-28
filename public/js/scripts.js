@@ -201,25 +201,36 @@ function fetchPalettesForProject(project) {
 
 function renderPalettesToPageFromProject(palettes, project) {
   const projectElements = document.querySelectorAll('.project-container')
-  const matchingProject = projectElements.find(projectElement => projectElement.id === project.id)
+  let matchingProject 
+
+  for (let i = 0; i < projectElements.length; i++) {
+    if (parseInt(projectElements[i].id) === project.id) {
+      matchingProject = projectElements[i]
+    }
+  }
 
   palettes.forEach(palette => {
+    console.log(palette)
     const paletteElement = document.createElement('div')
     paletteElement.id = matchingProject.id
     paletteElement.classList.add('project-palette-container')
-    const paletteElementTitle = document.createElement('h2')
+    const paletteElementTitle = document.createElement('h4')
+    paletteElementTitle.innerText = palette.name
     paletteElementTitle.classList.add('project-palette-container-title')
+    paletteElement.appendChild(paletteElementTitle)
 
     renderPaletteColorBoxes(palette.color_1, paletteElement)  
     renderPaletteColorBoxes(palette.color_2, paletteElement)
     renderPaletteColorBoxes(palette.color_3, paletteElement)
     renderPaletteColorBoxes(palette.color_4, paletteElement)
     renderPaletteColorBoxes(palette.color_5, paletteElement) 
+
+    matchingProject.appendChild(paletteElement)
   })
 
 }
 
-function renderPaletteColorBoxes(color, paletteElement) => {
+function renderPaletteColorBoxes(color, paletteElement) {
   const colorBox = document.createElement('div')
   colorBox.classList.add('palette-color-box')
   colorBox.style.backgroundColor = '#' + color 
