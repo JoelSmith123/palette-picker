@@ -4,6 +4,8 @@ Turing front-end mod 4 solo project
 
 [Project Spec](http://frontend.turing.io/projects/palette-picker.html)
 
+[Heroku deployment](https://joel-palette-picker.herokuapp.com/)
+
 ##
 
 ### Server file 
