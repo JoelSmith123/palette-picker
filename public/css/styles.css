@@ -12,6 +12,10 @@
   overflow: hidden;
 }
 
+.body-view {
+  overflow: visible;
+}
+
 .body-view * {
   position: relative;
   z-index: -1;
@@ -207,6 +211,6 @@
 }
 
 .removePaletteBtn {
-  
+
 }
 

@@ -1,23 +1,13 @@
 window.onload = function () {
   generatePaletteElement()
-  // toggleAllSavedPaletteStyles()
   loadSavedProjects()
 }
-
-
-// document.body.onkeyup = function (event) {
-//   if(event.keyCode == 32){
-//     generatePaletteElement()
-//   }
-// }
-
 
 const selectSavedBtn = document.querySelector('.select-saved-btn')
 selectSavedBtn.addEventListener('click', function (event) {
   event.preventDefault()
 
   toggleAllSavedPaletteStyles()
-  removePaletteBtnEventListener()
 })
 
 const generateNewPaletteBtn = document.querySelector('.generate-btn')
@@ -28,6 +18,7 @@ generateNewPaletteBtn.addEventListener('click', function (event) {
 })
 
 document.body.addEventListener('click', function (event) {
+  removePaletteBtnEventListener()
   if (event.target.classList.contains('unlocked-color-icon'))
   event.preventDefault()
 
@@ -39,6 +30,7 @@ newProjectForm.addEventListener('submit', function (event) {
   event.preventDefault()
 
   saveNewProject()
+  setTimeout(function(){ loadSavedProjects() }, 500)
 })
 
 const savePaletteBtn = document.querySelector('.save-palette-btn')
@@ -53,11 +45,12 @@ function removePaletteBtnEventListener() {
   for (let i = 0; i < removePaletteBtn.length; i++) {
     removePaletteBtn[i].addEventListener('click', function (event) {
       event.preventDefault()
+
+      console.log('ran')
       removePaletteFromProject(event)
     })
   }  
 }
-
 
 
 function toggleAllSavedPaletteStyles() {
@@ -204,6 +197,7 @@ function renderProjectsToPage(projects) {
     fetchPalettesForProject(project)
     addSelectProjectOptions(project)
   })
+
 }
 
 function fetchPalettesForProject(project) {
@@ -331,4 +325,5 @@ function removePaletteFromProject(event) {
 
   setTimeout(function(){ loadSavedProjects() }, 500)
 }
+
 
