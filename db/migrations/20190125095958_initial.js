@@ -10,12 +10,13 @@ exports.up = function(knex, Promise) {
 
     knex.schema.createTable('palettes', function(table) {
       table.increments('id').primary();
-      table.integer('color_1');
-      table.integer('color_2');
-      table.integer('color_3');
-      table.integer('color_4');
-      table.integer('color_5');
-      table.foreign('project_id')
+      table.string('color_1').alter();
+      table.string('color_2').alter();
+      table.string('color_3').alter();
+      table.string('color_4').alter();
+      table.string('color_5').alter();
+      table.string('project_id')
+        .unsigned()
         .references('projects.id');
 
       table.timestamps(true, true);
