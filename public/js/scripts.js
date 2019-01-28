@@ -189,6 +189,7 @@ function renderProjectsToPage(projects) {
     savedProjectContainer.appendChild(newProjectElement)    
 
     fetchPalettesForProject(project)
+    addSelectProjectOptions(project)
   })
 }
 
@@ -210,7 +211,6 @@ function renderPalettesToPageFromProject(palettes, project) {
   }
 
   palettes.forEach(palette => {
-    console.log(palette)
     const paletteElement = document.createElement('div')
     paletteElement.id = matchingProject.id
     paletteElement.classList.add('project-palette-container')
@@ -237,9 +237,44 @@ function renderPaletteColorBoxes(color, paletteElement) {
   paletteElement.appendChild(colorBox)
 }
 
+function addSelectProjectOptions(project) {
+  const projectSelectDropdownElement = document.querySelector('.project-select-dropdown')
+
+  const projectOptionElement = document.createElement('option')
+  projectOptionElement.value = project.id
+  projectOptionElement.innerText = project.name
+
+
+  projectSelectDropdownElement.appendChild(projectOptionElement)
+}
 
 
 function savePaletteToProject() {
+  const projectSelectDropdownElement = document.querySelector('.project-select-dropdown')
+  const selectedOptionProjectID = projectSelectDropdownElement.children[projectSelectDropdownElement.selectedIndex].value
 
+  function rgbToHex(R,G,B) {return toHex(R)+toHex(G)+toHex(B)}
+  function toHex(n) {
+   n = parseInt(n,10);
+   if (isNaN(n)) return "00";
+   n = Math.max(0,Math.min(n,255));
+   return "0123456789ABCDEF".charAt((n-n%16)/16)
+        + "0123456789ABCDEF".charAt(n%16);
+  }
+
+  function getRGB(str){
+    var match = str.match(/rgba?\((\d{1,3}), ?(\d{1,3}), ?(\d{1,3})\)?(?:, ?(\d(?:\.\d?))\))?/);
+    return match ? {
+      red: match[1],
+      green: match[2],
+      blue: match[3]
+    } : {};
+  }
+
+  const currentPalette = document.querySelectorAll('.palette-color')
+  for (let i = 0; i < currentPalette.length; i++) {
+    let rbgObject = getRGB(currentPalette[i].style.backgroundColor)
+    console.log(rgbToHex(rbgObject.red, rbgObject.green, rbgObject.blue))
+  }
 }
 
