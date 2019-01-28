@@ -5,11 +5,11 @@ window.onload = function () {
 }
 
 
-document.body.onkeyup = function (event) {
-  if(event.keyCode == 32){
-    generatePaletteElement()
-  }
-}
+// document.body.onkeyup = function (event) {
+//   if(event.keyCode == 32){
+//     generatePaletteElement()
+//   }
+// }
 
 
 const selectSavedBtn = document.querySelector('.select-saved-btn')
@@ -177,6 +177,8 @@ function loadSavedProjects() {
 
 function renderProjectsToPage(projects) {
   const savedProjectContainer = document.querySelector('.saved-project-container')
+  savedProjectContainer.innerHTML = ''
+
   projects.forEach(project => {
     
     const newProjectElement = document.createElement('div')
@@ -272,9 +274,32 @@ function savePaletteToProject() {
   }
 
   const currentPalette = document.querySelectorAll('.palette-color')
+  const paletteNameInput = document.querySelector('.palette-name-input')
+  let paletteColors = []
   for (let i = 0; i < currentPalette.length; i++) {
     let rbgObject = getRGB(currentPalette[i].style.backgroundColor)
-    console.log(rgbToHex(rbgObject.red, rbgObject.green, rbgObject.blue))
-  }
+    paletteColors.push(rgbToHex(rbgObject.red, rbgObject.green, rbgObject.blue))    
+  }    
+
+  fetch(`/api/v1/projects/${selectedOptionProjectID}/palettes`, {
+    method: 'POST',
+    body: JSON.stringify({ 
+      id: parseInt(Date.now().toString().split('').slice(6).join('')),
+      name: paletteNameInput.value,
+      color_1: paletteColors[0],
+      color_2: paletteColors[1],
+      color_3: paletteColors[2],
+      color_4: paletteColors[3],
+      color_5: paletteColors[4],
+      project_id: selectedOptionProjectID
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then( response => response.json() )
+  .catch(error => console.log(error))
+
+  loadSavedProjects()
 }
 

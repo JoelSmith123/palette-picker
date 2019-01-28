@@ -102,21 +102,22 @@ app.get('/api/v1/projects/:id/palettes', (request, response) => {
 
 app.post('/api/v1/projects/:id/palettes', (request, response) => {
   const palette = request.body
-  const id = Date.now()
+  const id = palette.id
 
   for (let requiredParameter of ['color_1', 'color_2', 'color_3', 'color_4', 'color_5']) {
-    if (!palette[requiredParameter]) {
+    if (!palette[requiredParameter]) {  
       return response
         .status(422)
         .send({ error: `Expected format: { name: <String> }. You're missing a "${requiredParameter}" property.` })
     }
   }
-
-  database('palettes').insert(palette, 'id')
+  console.log(palette)
+  database('palettes').insert(palette)
     .then(palette => {
       response.status(201).json({ id })
     })
     .catch(error => {
+      console.log(error)
       response.status(500).json({ error });
     });
 })
