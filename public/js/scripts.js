@@ -47,6 +47,7 @@ savePaletteBtn.addEventListener('click', function (event) {
 })
 
 
+
 function toggleAllSavedPaletteStyles() {
   toggleBodyStyle()
   toggleHeaderStyle()
@@ -163,6 +164,6 @@ function saveNewProject(event) {
 }
 
 function savePaletteToProject() {
-  
+
 }
 
