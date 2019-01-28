@@ -1,5 +1,7 @@
 const express = require('express')
 const environment = process.env.NODE_ENV || 'development';
+const configuration = require('./knexfile')[environment];
+const database = require('knex')(configuration);
 const path = require('path')
 const bodyParser = require('body-parser')
 const app = express()
@@ -23,133 +25,132 @@ app.use(urlLogger, timeLogger)
 app.set('port', process.env.PORT || 3000)
 app.locals.title = 'Palette Picker'
 
-
-
-app.locals.savedProjects = [
-  {
-    id: 1,
-    name: 'Harrison',
-    type: 'Dog'
-  },
-  {
-    id: 2, 
-    name: 'Leia',
-    type: 'Dog'
-  },
-  {
-    id: 3,
-    name: 'Marlow',
-    type:'Cat'
-  }  
-]
-
-
-
-
 app.get('/', (request, response) => {
   response.sendFile(path.join(_dirname + '/public/index.html'))
 })
 
 app.get('/api/v1/projects', (request, response) => {
-  const { savedProjects } = app.locals
-  response.status(200).json({ savedProjects })
+  database('projects').select()
+    .then((projects) => {
+      response.status(200).json(projects)
+    })
+    .catch(() => {
+      response.sendStatus(500)
+    })
 })
 
 app.post('/api/v1/projects', (request, response) => {
-  const { project } = request.body
+  const project = request.body
   const id = Date.now()
 
-  if (project) {
-    app.locals.savedProjects.push({...project, id})    
-    response.status(200).json({ id })
-  }
-  else {
-    response.sendStatus(422)
-  }
+  for (let requiredParameter of ['name']) {
+    if (!project[requiredParameter]) {
+      return response
+        .status(422)
+        .send({ error: `Expected format: { name: <String> }. You're missing a "${requiredParameter}" property.` });
+    }
+  }  
+
+  database('projects').insert(project, 'id')
+    .then(project => {
+      response.status(201).json({ id })
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
 })
 
 app.get('/api/v1/projects/:id', (request, response) => {
-  const id = parseInt(request.params.id)
-  const project = app.locals.savedProjects.find(project => project.id === id)
+  const projectID = parseInt(request.params.id)
 
-  if (project) {
-    response.status(200).json({ project })    
-  }
-  else {
-    response.sendStatus(404)
-  }
+  database('projects')
+    .where('id', projectID)
+    .then(() => {
+      response.status(200).json(project)
+    })
+    .catch(() => {
+      response.sendStatus(404)
+    })
 })
 
 app.delete('/api/v1/projects/:id', (request, response) => {
-  const id = parseInt(request.params.id)
-  const project = app.locals.savedProjects.find(project => project.id === id)
+  const projectID = parseInt(request.params.id)
 
-  if (project) {
-    app.locals.savedProjects = app.locals.savedProjects.filter((project, index) => { 
-      if (project.id === id) {
-        app.locals.savedProjects.splice(index, 1)
-      } 
+  database('projects')
+    .where('id', projectID)
+    .del()
+    .then(() => {
+      response.status(200).json({ projectID })
+    })      
+    .catch(() => {
+      response.sendStatus(404)
     })
-    response.status(200)
-  }
-  else {
-    response.sendStatus(404)
-  }
 })
 
 app.get('/api/v1/projects/:id/palettes', (request, response) => {
   const id = parseInt(request.params.id)
-  const palettes = app.locals.savedProjects.find(project => project.id === id).palettes
 
-  if (palettes) {
-    response.status(200).json({ palettes })    
-  }
-  else {
-    response.sendStatus(404)
-  }
+  database('palettes')
+    .where('project_id', id)
+    .then((palette) => {
+      response.status(200).json(palette)
+    })
+    .catch(() => {
+      response.sendStatus(404)
+    })
 })
 
 app.post('/api/v1/projects/:id/palettes', (request, response) => {
-  const { palette } = request.body
-  const project = app.locals.savedProjects.find(project => project.id === projectID)
+  const palette = request.body
   const id = Date.now()
 
-  if (palette) {
-    project.push({...palette, id})    
-    response.status(200).json({ id })
+  for (let requiredParameter of ['color_1', 'color_2', 'color_3', 'color_4', 'color_5']) {
+    if (!palette[requiredParameter]) {
+      return response
+        .status(422)
+        .send({ error: `Expected format: { name: <String> }. You're missing a "${requiredParameter}" property.` })
+    }
   }
-  else {
-    response.sendStatus(422)
-  }  
+
+  database('palettes').insert(palette, 'id')
+    .then(palette => {
+      response.status(201).json({ id })
+    })
+    .catch(error => {
+      response.status(500).json({ error });
+    });
 })
 
 app.get('/api/v1/projects/:projectID/palettes/:paletteID', (request, response) => {
   const projectID = parseInt(request.params.projectID)
   const paletteID = parseInt(request.params.paletteID)
-  const project = app.locals.savedProjects.find(project => project.id === projectID)
-  const palette = project.palettes.find(palette => palette.id === paletteID)
 
-  if (palette) {
-    response.status(200).json({ palette })    
-  }
-  else {
-    response.sendStatus(404)
-  }
+  database('palettes')
+    .where('project_id', projectID)
+    .andWhere('id', paletteID)
+    .then((palette) => {
+      response.status(200).json(palette)
+    })
+    .catch(() => {
+      response.sendStatus(404)      
+    })
 })
 
 app.delete('/api/v1/projects/:projectID/palettes/:paletteID', (request, response) => {
   const projectID = parseInt(request.params.projectID)
   const paletteID = parseInt(request.params.paletteID)
-  let project = app.locals.savedProjects.find(project => project.id === projectID)
-  const palette = project.palettes.find(palette => palette.id === paletteID)
 
-  if (palette) {
-    project.palettes = project.palettes.filter((palette, index) => { 
-      if (palette.id === id) {
-        project.palettes.splice(index, 1)
-      } 
+  database('palettes')
+    .where('project_id', projectID)
+    .andWhere('id', paletteID)
+    .del()
+    .then(() => {
+      response.status(200).json({ paletteID })
+    })      
+    .catch(() => {
+      response.sendStatus(404)
     })    
-  }
+
 })
 
 app.listen(app.get('port'), () => {
