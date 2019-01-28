@@ -1,6 +1,6 @@
 window.onload = function () {
   generatePaletteElement()
-  toggleAllSavedPaletteStyles()
+  // toggleAllSavedPaletteStyles()
   loadSavedProjects()
 }
 
@@ -17,6 +17,7 @@ selectSavedBtn.addEventListener('click', function (event) {
   event.preventDefault()
 
   toggleAllSavedPaletteStyles()
+  removePaletteBtnEventListener()
 })
 
 const generateNewPaletteBtn = document.querySelector('.generate-btn')
@@ -46,6 +47,16 @@ savePaletteBtn.addEventListener('click', function (event) {
 
   savePaletteToProject()
 })
+
+function removePaletteBtnEventListener() {
+  const removePaletteBtn = document.querySelectorAll('.remove-palette-btn')
+  for (let i = 0; i < removePaletteBtn.length; i++) {
+    removePaletteBtn[i].addEventListener('click', function (event) {
+      event.preventDefault()
+      removePaletteFromProject(event)
+    })
+  }  
+}
 
 
 
@@ -214,7 +225,7 @@ function renderPalettesToPageFromProject(palettes, project) {
 
   palettes.forEach(palette => {
     const paletteElement = document.createElement('div')
-    paletteElement.id = matchingProject.id
+    paletteElement.id = palette.id
     paletteElement.classList.add('project-palette-container')
     const paletteElementTitle = document.createElement('h4')
     paletteElementTitle.innerText = palette.name
@@ -305,8 +316,19 @@ function savePaletteToProject() {
   .then( response => response.json() )
   .catch(error => console.log(error))
 
-  loadSavedProjects()
+  setTimeout(function(){ loadSavedProjects() }, 500)
 }
 
+function removePaletteFromProject(event) {
+  const paletteID = event.target.parentNode.id
+  const projectID = event.target.parentNode.parentNode.id
 
+  fetch(`/api/v1/projects/${projectID}/palettes/${paletteID}`, {
+    method: 'DELETE'
+  })
+  .then(response => response.json())
+  .catch(error => console.log(error))
+
+  setTimeout(function(){ loadSavedProjects() }, 500)
+}
 
