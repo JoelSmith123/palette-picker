@@ -1,5 +1,7 @@
 const express = require('express')
 const environment = process.env.NODE_ENV || 'development';
+const configuration = require('./knexfile')[environment];
+const database = require('knex')(configuration);
 const path = require('path')
 const bodyParser = require('body-parser')
 const app = express()
@@ -23,35 +25,12 @@ app.use(urlLogger, timeLogger)
 app.set('port', process.env.PORT || 3000)
 app.locals.title = 'Palette Picker'
 
-
-
-app.locals.savedProjects = [
-  {
-    id: 1,
-    name: 'Harrison',
-    type: 'Dog'
-  },
-  {
-    id: 2, 
-    name: 'Leia',
-    type: 'Dog'
-  },
-  {
-    id: 3,
-    name: 'Marlow',
-    type:'Cat'
-  }  
-]
-
-
-
-
 app.get('/', (request, response) => {
   response.sendFile(path.join(_dirname + '/public/index.html'))
 })
 
 app.get('/api/v1/projects', (request, response) => {
-  const { savedProjects } = app.locals
+  const { savedProjects } = database('projects')
   response.status(200).json({ savedProjects })
 })
 

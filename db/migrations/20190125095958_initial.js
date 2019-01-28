@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
       table.increments('id').primary();
       table.string('name');
 
-      table.timeStamps(true, true);
+      table.timestamps(true, true);
     }),
 
     knex.schema.createTable('palettes', function(table) {
@@ -18,7 +18,7 @@ exports.up = function(knex, Promise) {
       table.foreign('project_id')
         .references('projects.id');
 
-      table.timeStamps(true, true);
+      table.timestamps(true, true);
     })
   ])
 };
