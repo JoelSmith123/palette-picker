@@ -39,6 +39,13 @@ newProjectForm.addEventListener('submit', function (event) {
   saveNewProject(event)
 })
 
+const savePaletteBtn = document.querySelector('.save-palette-btn')
+savePaletteBtn.addEventListener('click', function (event) {
+  event.preventDefault()
+
+  savePaletteToProject()
+})
+
 
 function toggleAllSavedPaletteStyles() {
   toggleBodyStyle()
@@ -153,5 +160,9 @@ function saveNewProject(event) {
   newProjectElementTitle.innerText = newProjectInput.value
   newProjectElement.appendChild(newProjectElementTitle)
   savedProjectContainer.appendChild(newProjectElement)
+}
+
+function savePaletteToProject() {
+  
 }
 
