@@ -138,7 +138,7 @@ app.post('/api/v1/projects/:id/palettes', (request, response) => {
         .send({ error: `Expected format: { name: <String> }. You're missing a "${requiredParameter}" property.` })
     }
   }
-  console.log(palette)
+  
   database('palettes').insert(palette)
     .then(palette => {
       response.status(201).json({ id })
