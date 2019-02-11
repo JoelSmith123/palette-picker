@@ -16,10 +16,6 @@ Turing front-end mod 4 solo project
 
 [Available at Figma](https://www.figma.com/file/fZ4vMGZ2gczlDRLWrI1jlwfs/Palette-Picker?node-id=0%3A1)
 
-### Inspiration
-
-[Available at Dribble](https://dribbble.com/shots/4006076-Nespresso-e-commerce-site)
-
 ## 
 
 ### Contributors
